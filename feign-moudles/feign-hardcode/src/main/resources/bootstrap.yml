@@ -1,0 +1,50 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: feign-hardcode-consume
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        namespace: public
+        username: nacos
+        password: naocs
+        metadata:
+          AA: aa
+          BB: bb
+
+#配置被调用的ribbon-provider-custom-rule采用NacosRule的规则进行负载均衡
+ribbon-provider-custom-rule:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+
+#feign 默认集成了ribbon
+#ribbon的相关配置
+ribbon:
+  #所有服务默认都使用ZoneAvoidanceRule(默认不配置也是它)
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    #饥饿配置
+    enabled: true
+    #饥饿配置的客户端，多个之间,分割
+    clients: ribbon-provider-custom-rule
+
+#配合feign的日志配置使用
+logging:
+  level:
+    com.zk.feign.hardcode.main.service: debug
+feign:
+  #请求压缩,开启压缩可以有效节约网络资源，提升接口性能，我们可以配置 GZIP 来压缩数据,大于一定量的数据才会压缩
+  #只有当 Feign 的 Http Client 不是 okhttp3 的时候，压缩才会生效，配置源码在FeignAcceptGzipEncodingAutoConfiguration
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+  #使用httpclient
+  httpclient:
+    enabled: true
+  okhttp:
+    #启用或者禁用okHttp
+    enabled: false

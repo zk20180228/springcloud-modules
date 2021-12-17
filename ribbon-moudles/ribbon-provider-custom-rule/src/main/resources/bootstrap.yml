@@ -1,0 +1,15 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: ribbon-provider-custom-rule
+  cloud:
+    nacos:
+      discovery:
+        namespace: public
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        metadata:
+          AA: aa
+          BB: bb

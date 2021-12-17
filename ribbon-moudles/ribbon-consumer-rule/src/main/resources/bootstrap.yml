@@ -1,0 +1,34 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: ribbon-consumer-rule
+  cloud:
+    nacos:
+      discovery:
+        namespace: public
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        metadata:
+            AA: aa
+            BB: bb
+
+#通过yml方式配置指定被调用方的负载均衡策略
+#被调用的服务方的名字
+ribbon-provider-custom-rule:
+  ribbon:
+     #负责均衡规则类
+     NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#Ribbon默认懒加载，意味着只有在发起调用的时候才会创建客户端(可以认为是ribbon的初始化工作)。
+#ribbon开启饥饿加载，以及配置饥饿加载
+ribbon:
+  #所有服务都使用ZoneAvoidanceRule(默认不配置也是它)
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    #开启饥饿加载
+    enabled: true
+    #配置饥饿加载
+    clients: ribbon-provider-custom-rule
+
+#关于负载均衡的rule的自定义配置，请参考com.alibaba.cloud.nacos.ribbon.NacosRule，源码 特别简单

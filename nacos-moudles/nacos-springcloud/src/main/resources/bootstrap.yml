@@ -1,0 +1,44 @@
+#坑1:与springcloud集成时,配置文件必须为bootstrap.yml,否则会出现要么无法监听默认配置,要么监听到了无法自动刷新
+#坑2: 如果要用@NacosInjected,必须在启动类上加上@EnableNacos(globalProperties = @NacosProperties)
+#坑3: nacos-spring-context要用0.3.6(实验证明1.x版本存在各种问题)
+#坑4: nacos-client尽量采用1.4.2版本,2.x版本各种问题
+server:
+  port: 8080
+  #nacos配置相关的
+spring:
+  application:
+    name: nacos-springcloud
+  cloud:
+    nacos:
+      config:
+          server-addr: 192.168.241.13:8848
+          namespace: c0de2cae-fe50-420b-8c60-a3770a36ac40
+          username: nacos
+          password: nacos
+          prefix: ${spring.application.name}
+          file-extension: properties
+          refresh-enabled: true
+      discovery:
+          server-addr: 192.168.241.13:8848
+          namespace: c0de2cae-fe50-420b-8c60-a3770a36ac40
+          username: nacos
+          password: nacos
+          ephemeral: true
+          ip: 192.168.10.127
+          port: 8080
+          metadata:
+            aa: AA
+            bb: BB
+          weight: 30
+          service: ${spring.application.name}
+          register-enabled: true
+
+  #自定义监听配置
+nacos:
+  config:
+    server-addr01: 192.168.241.13:8848
+    namespace01: 2ac4fbee-e911-4f03-b076-125d4e6cea85
+    username01: nacos
+    password01: nacos
+    dataId01: zk-info
+    groupId01: user

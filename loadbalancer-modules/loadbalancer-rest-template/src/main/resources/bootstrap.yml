@@ -1,0 +1,19 @@
+server:
+  port: 7888
+spring:
+  application:
+    name: loadbalancer-rest-template-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        namespace: public
+        username: nacos
+        password: naocs
+        metadata:
+            AA: aa
+            BB: bb
+    loadbalancer:
+      ribbon:
+        enabled: false
+

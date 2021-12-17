@@ -1,0 +1,16 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: gateway-global-exception
+  cloud:
+    gateway:
+      routes:
+        - id: global-exception-test01
+          uri: http://localhost:9091
+          #路由的优先级,数字越小级别越高
+          order: 1
+          predicates:
+            - Path=/global-exception/**
+          filters:
+            - StripPrefix=1

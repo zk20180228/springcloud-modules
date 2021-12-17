@@ -1,0 +1,39 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: route-predicate-factory
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+    gateway:
+      routes:
+        - id: route-predicate-factory-test01
+          uri: lb://ribbon-provider-custom-rule
+          predicates:
+            - Path=/route-predicate/**
+          filters:
+            - StripPrefix=1
+
+#springcloud-gateway使用的ribbon进行负载均衡，在这里进行ribbon的负载规则的配置
+#通过yml方式配置指定被调用方的负载均衡策略
+#被调用的服务方的名字
+ribbon-provider-custom-rule:
+  ribbon:
+    #负责均衡规则类
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#Ribbon默认懒加载，意味着只有在发起调用的时候才会创建客户端(可以认为是ribbon的初始化工作)。
+#ribbon开启饥饿加载，以及配置饥饿加载
+ribbon:
+  #所有服务都使用ZoneAvoidanceRule(默认不配置也是它)
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    clients: ribbon-provider-custom-rule
+    enabled: true

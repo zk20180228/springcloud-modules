@@ -1,0 +1,62 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: feign-yml-config-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        metadata:
+          AA: aa
+          BB: bb
+
+#ribbon相关配置
+ribbon-provider-custom-rule:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+
+ribbon:
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    clients: ribbon-provider-custom-rule
+    enabled: true
+
+#feign的全局配置
+feign:
+  okhttp:
+    enabled: false
+  compression:
+    response:
+      enabled: true
+    request:
+      enabled: true
+  #httpclient相关配置
+  httpclient:
+    #开启httpclient
+    enabled: true
+    connection-timeout: 2000
+    #最大连接数的默认值。
+    max-connections: 500
+    #每条路由的最大连接数的默认值
+    max-connections-per-route: 50
+    #生存时间的默认值 900s
+    time-to-live: 900
+  client:
+    config:
+      #针对ribbon-provider-custom-rule这个服务进行配置
+      ribbon-provider-custom-rule:
+        #此处配置枚举的名字即可(还是要配置为FULL的，否则看不到请求体和响应体)
+        loggerLevel: FULL
+        connectTimeout: 2000
+        readTimeout: 3000
+        #配置全限定类名
+        requestInterceptors:
+          - com.zk.feign.ymlconfig.main.config.feign.FeignRequestLogInterceptor01
+          - com.zk.feign.ymlconfig.main.config.feign.FeignRequestLogInterceptor02
+logging:
+  level:
+    #配置某个包的日志级别(在这里是搭配feign的日志配置使用)
+    com.zk.feign.ymlconfig.main.service: debug
