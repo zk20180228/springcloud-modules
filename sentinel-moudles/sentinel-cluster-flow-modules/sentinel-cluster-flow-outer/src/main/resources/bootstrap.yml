@@ -1,0 +1,47 @@
+#控制台启动脚本如下
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-cluster-flow-outer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        namespace: public
+        username: nacos
+        password: nacos
+        metadata:
+          AA: aa
+          BB: bb
+    sentinel:
+      log:
+        switch-pid: true
+      transport:
+        #-Dcsp.sentinel.api.port=xxxx 指定客户端监控 API 的端口（默认是 8719）
+        port: 8777
+        dashboard: 192.168.241.13:7888
+      web-context-unify: false
+      eager: true
+#两种身份
+#  token client：集群流控客户端，用于向所属 token server 通信请求 token。集群限流服务端会返回给客户端结果，决定是否限流。
+#  token server：即集群流控服务端，处理来自 token client 的请求，根据配置的集群规则判断是否应该发放 token（是否允许通过）
+
+#两种形式的阈值
+#  集群总体模式：即限制整个集群内的某个资源的总体 qps 不超过此阈值。
+#  单机均摊模式：单机均摊模式下配置的阈值等同于单机能够承受的限额，token server 会根据连接数来计算总的阈值（比如独立模式下有 3 个 client 连接到了 token server，然后配的单机均摊阈值为 10，则计算出的集群总量就为 30），按照计算出的总的阈值来进行限制。这种方式根据当前的连接数实时计算总的阈值，对于机器经常进行变更的环境非常适合
+#  token server 会根据客户端对应的 namespace（默认为 project.name 定义的应用名）下的连接数来计算总的阈值
+
+#两种部署方式
+#  独立部署
+#  嵌入部署
+
+#两种流控方式
+#  ClusterFlowRuleManager 针对集群限流规则，
+#  ClusterParamFlowRuleManager 针对集群热点规则，配置方式类似
+#  ParamFlowRule 热点参数限流相关的集群配置与 FlowRule 相似
+
+#tokenserver的namespace的概念
+#  token server 会根据客户端对应的 namespace set（默认为 project.name 定义的应用名）下的连接数来计算总的阈值
+#  根据以上的官方给出的话，可以推断namespace可以认为时一个集群名字，类似于命名服务

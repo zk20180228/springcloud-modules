@@ -1,0 +1,78 @@
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-nacos-datasource-yml
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        refresh-enabled: true
+        file-extension: yml
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+        ephemeral: true
+        register-enabled: true
+    sentinel:
+      log:
+        switch-pid: true
+      transport:
+        port: 8719
+        dashboard: 192.168.241.13:7888
+      web-context-unify: false
+      eager: true
+      datasource:
+        #以下是数据源的配置(ps:可以改造控制台，打开v2相关接口，让控制台配置的规则推送到nacos,然后应用订阅变更的规则)
+         flow‐rules:
+            nacos:
+              serverAddr: 192.168.241.13:8848
+              dataId: dynamic-flow-rule-datasource.json
+              groupId: DEFAULT_GROUP
+              dataType: json
+              ruleType: flow
+#         degrade‐rules:
+#            nacos:
+#             serverAddr: 192.168.241.13:8848
+#             dataId: dynamic-flow-rule-datasource.json
+#             groupId: DEFAULT_GROUP
+#             dataType: json
+#             ruleType: degrade
+#         param‐flow‐rules:
+#            nacos:
+#             serverAddr: 192.168.241.13:8848
+#             dataId: dynamic-flow-rule-datasource.json
+#             groupId: DEFAULT_GROUP
+#             dataType: json
+#             ruleType: param‐flow
+#         authority‐rules:
+#            nacos:
+#             serverAddr: 192.168.241.13:8848
+#             dataId: dynamic-flow-rule-datasource.json
+#             groupId: DEFAULT_GROUP
+#             dataType: json
+#             ruleType: authority
+#         system‐rules:
+#            nacos:
+#             serverAddr: 192.168.241.13:8848
+#             dataId: dynamic-flow-rule-datasource.json
+#             groupId: DEFAULT_GROUP
+#             dataType: json
+#             ruleType: system
+#         gw-flow:
+#            nacos:
+#             serverAddr: 192.168.241.13:8848
+#             dataId: dynamic-flow-rule-datasource.json
+#             groupId: DEFAULT_GROUP
+#             dataType: json
+#             #网关猜测是gw-flow，但我也不确定
+#             ruleType: gw-flow

@@ -1,0 +1,33 @@
+#控制台启动脚本如下
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-degrade-rule
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+    sentinel:
+      transport:
+        #sentinel命名服务(api、注册中心)地址
+        dashboard: 192.168.241.13:7888
+        port: 8719
+      #指定是否统一web上下文（即使用默认上下文名称），默认为true。
+      #如果为true,那么所有由springMvc的api的入口资源名叫做 sentinel_spring_web_context,
+      #这个时候api流控模式选择链路大多数是不生效的，因为所有的api的入口资源名都是sentinel_spring_web_context
+      #如果想对springMvc提供的api进行链路流控，这个值要设置为false
+      web-context-unify: false
+      log:
+        #日志加上pid，防止单机部署多应用，dashboard统计的qps是实例数的倍数
+        switch-pid: true
+      #饥饿加载
+      eager: true
+

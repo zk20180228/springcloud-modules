@@ -1,0 +1,41 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: gateway-global-filter
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+            AA: aa
+            BB: bb
+    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+      routes:
+        - id: gateway-global-filter-test
+          #URL是URI（URL是URI(scheme：[// [user：password @] host [：port]] [/] path [？查询] [#片段])的子集），但URI永远不能是URL
+          uri: lb://ribbon-provider-custom-rule
+          predicates:
+            - Path=/gateway-global-filter/**
+          filters:
+            - StripPrefix=1
+
+
+#ribbon相关配置
+ribbon-provider-custom-rule:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+
+ribbon:
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    enabled: true
+    clients: ribbon-provider-custom-rule
+

@@ -1,0 +1,25 @@
+#控制台启动脚本如下
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-parameter-rule
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+    sentinel:
+      eager: true
+      transport:
+        dashboard: 192.168.241.13:7888
+        port: 8719
+      web-context-unify: false
+      log:
+        switch-pid: true

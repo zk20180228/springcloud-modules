@@ -1,0 +1,61 @@
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 6999
+spring:
+  resources:
+    ##不为静态文件建立映射【一定要为false,否则当浏览器访问不存在的资源，跳转页面到/error,throw-exception-if-no-handler-found也不生效】
+    add-mappings: false
+  mvc:
+    #没有绑定的url直接抛出错误(抛出后由统一异常处理)
+    throw-exception-if-no-handler-found: true
+  application:
+    name: skywalking-api-privider
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        #新配置的主开关，默认打开（true）
+        refresh-enabled: true
+        #nacos config dataId 的后缀，也是配置内容的文件扩展名
+        file-extension: yml
+        #如果想在程序第一次开始获取配置时自己拉取，注册的Listener用于以后的配置更新，可以保持原代码不变，只需添加系统参数：enableRemoteSyncConfig = "true" （但有网络开销）； 因此我们建议您直接使用ConfigService.getConfigAndSignListener 。
+        enable-remote-sync-config: true
+        prefix: ${spring.application.name}
+        group: DEFAULT_GROUP
+      discovery:
+          server-addr: 192.168.241.13:8848
+          username: nacos
+          password: nacos
+          namespace: public
+          metadata:
+            AA: aa
+            BB: bb
+          register-enabled: true
+    sentinel:
+      eager: true
+      web-context-unify: false
+      transport:
+        port: 8715
+        dashboard: 192.168.241.13:7888
+      log:
+        switch-pid: true
+      #流控规则
+      datasource:
+        #以下是数据源的配置(ps:可以改造控制台，打开v2相关接口，让控制台配置的规则推送到nacos,然后应用订阅变更的规则)
+        flow‐rules:
+           nacos:
+            serverAddr: 192.168.241.13:8848
+            dataId: skywalking-api-privider-flow-rule-datasource.json
+            groupId: DEFAULT_GROUP
+            dataType: json
+            ruleType: flow
+  datasource:
+    url: jdbc:mysql://192.168.241.13:3306/databases?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  config-location: classpath:mappers/*Mappper.xml

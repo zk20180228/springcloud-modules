@@ -1,0 +1,111 @@
+server:
+  port: 6889
+spring:
+  resources:
+    ##不为静态文件建立映射【一定要为false,否则当浏览器访问不存在的资源，跳转页面到/error,throw-exception-if-no-handler-found也不生效】
+    add-mappings: false
+  mvc:
+    #没有绑定的url直接抛出错误(抛出后由统一异常处理)
+    throw-exception-if-no-handler-found: true
+  application:
+    name: skywalking-api-consumer
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        #新配置的主开关，默认打开（true）
+        refresh-enabled: true
+        #nacos config dataId 的后缀，也是配置内容的文件扩展名
+        file-extension: yaml
+        #如果想在程序第一次开始获取配置时自己拉取，注册的Listener用于以后的配置更新，可以保持原代码不变，只需添加系统参数：enableRemoteSyncConfig = "true" （但有网络开销）； 因此我们建议您直接使用ConfigService.getConfigAndSignListener 。
+        enable-remote-sync-config: true
+        prefix: ${spring.application.name}
+        group: DEFAULT_GROUP
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+        register-enabled: true
+    sentinel:
+      eager: true
+      web-context-unify: false
+      transport:
+        port: 8718
+        dashboard: 192.168.241.13:7888
+      log:
+        switch-pid: true
+      #流控规则
+      datasource:
+        #以下是数据源的配置(ps:可以改造控制台，打开v2相关接口，让控制台配置的规则推送到nacos,然后应用订阅变更的规则)
+        flow‐rules:
+           nacos:
+            serverAddr: 192.168.241.13:8848
+            dataId: skywalking-api-consumer-flow-rule-datasource.json
+            groupId: DEFAULT_GROUP
+            dataType: json
+            ruleType: flow
+feign:
+  hystrix:
+    enabled: false
+  #sentinel对feign的支持
+  sentinel:
+    enabled: true
+  client:
+    config:
+      #针对ribbon-provider-custom-rule这个服务进行配置
+      skywalking-api-privider:
+        #此处配置枚举的名字即可(还是要配置为FULL的，否则看不到请求体和响应体)
+        loggerLevel: FULL
+        connectTimeout: 2000
+        #服务提供者睡眠了10s，因此这里故意写的很大
+        readTimeout: 30000
+        #配置全限定类名
+        requestInterceptors:
+          - com.zk.skywalking.api.consumer.config.fegin.interceptors.RequestInterceptor01
+  #httpclient相关配置
+  httpclient:
+    #开启httpclient
+    enabled: true
+    connection-timeout: 2000
+    #最大连接数的默认值。
+    max-connections: 500
+    #每条路由的最大连接数的默认值
+    max-connections-per-route: 50
+    #生存时间的默认值 900s
+    time-to-live: 900
+  compression:
+    response:
+      enabled: true
+    request:
+      enabled: true
+
+logging:
+  level:
+    com.zk.skywalking.helloworld.main.serviceitfs.*: debug
+    #Nacos 注册中心客户端心跳日志禁用【当配置了com.zk.skywalking.helloworld.main.serviceitfs.*: debug，不禁用会不停打印】 get changedGroupKeys:[]
+    com.alibaba.nacos.client.*: WARN
+
+#通过yml方式配置指定被调用方的负载均衡策略
+#被调用的服务方的名字
+skywalking-api-privider:
+  ribbon:
+    #负责均衡规则类
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#Ribbon默认懒加载，意味着只有在发起调用的时候才会创建客户端(可以认为是ribbon的初始化工作)。
+#ribbon开启饥饿加载，以及配置饥饿加载
+ribbon:
+  #所有服务都使用ZoneAvoidanceRule(默认不配置也是它)
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    #开启饥饿加载
+    enabled: true
+    #配置饥饿加载
+    clients: skywalking-api-privider
+#关于负载均衡的rule的自定义配置，请参考com.alibaba.cloud.nacos.ribbon.NacosRule，源码 特别简单

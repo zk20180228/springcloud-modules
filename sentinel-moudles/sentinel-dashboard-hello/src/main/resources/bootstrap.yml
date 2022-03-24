@@ -1,0 +1,30 @@
+#控制台启动脚本如下
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-dashboard-hello
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+    sentinel:
+      #饥饿加载
+      eager: true
+      transport:
+        #sentinel控制台服务的端口号(api地址)
+        dashboard: 192.168.241.13:7888
+        #本地会启动一个端口号和sentinel控制台进行交互(本地为server模式)，
+        #原理：sentinel实现了类似于命名服务的注册发现机制，客户端通过192.168.241.13:7888进行注册自己
+        #然后sentinel控制台通过客户端的api来进行通信如：获取微服务端的监控信息、Sentinel控制台配置规则后，发送规则到微服务端
+        port: 8719
+      log:
+        #单机部署时通过pid来区分，否则统计的结果将会是平时的阈值*实例数
+        switch-pid: true

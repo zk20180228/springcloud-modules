@@ -46,8 +46,8 @@ class NacosSdkApplicationTests {
             });
 
             log.info("当前配置内容为:{}",configInfo);
-            Thread.sleep(100000L);
             //阻塞当前线程,不让其立马退出
+            Thread.sleep(100000L);
             configService.shutDown();
         }
     }

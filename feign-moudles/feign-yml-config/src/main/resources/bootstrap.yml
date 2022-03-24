@@ -59,4 +59,4 @@ feign:
 logging:
   level:
     #配置某个包的日志级别(在这里是搭配feign的日志配置使用)
-    com.zk.feign.ymlconfig.main.service: debug
+    com.zk.feign.ymlconfig.main.service.*: debug

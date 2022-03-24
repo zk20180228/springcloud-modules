@@ -33,7 +33,7 @@ ribbon:
 #配合feign的日志配置使用
 logging:
   level:
-    com.zk.feign.hardcode.main.service: debug
+    com.zk.feign.hardcode.main.service.*: debug
 feign:
   #请求压缩,开启压缩可以有效节约网络资源，提升接口性能，我们可以配置 GZIP 来压缩数据,大于一定量的数据才会压缩
   #只有当 Feign 的 Http Client 不是 okhttp3 的时候，压缩才会生效，配置源码在FeignAcceptGzipEncodingAutoConfiguration

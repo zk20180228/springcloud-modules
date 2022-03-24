@@ -21,36 +21,36 @@ spring:
           order: 1
           predicates:
             - Path=/gateway-nacos/**
-            - After=
-            - Before=
-            - Between=
-            - CloudFoundryRouteService
-            - Cookie=
-            - Header=
-            - Host=
-            - Method=
-            - Query=
-            - ReadBody=
-            - RemoteAddr=
-            - Weight=
+#            - After=
+#            - Before=
+#            - Between=
+#            - CloudFoundryRouteService
+#            - Cookie=
+#            - Header=
+#            - Host=
+#            - Method=
+#            - Query=
+#            - ReadBody=
+#            - RemoteAddr=
+#            - Weight=
           filters:
             - StripPrefix=1
-            - AddRequestHeader=
-            - AddRequestParameter=
-            - AddResponseHeader=
-            - DedupeResponseHeader=
-            - FallbackHeaders=
-            - Hystrix=
-            - MapRequestHeader=
-            - PrefixPath=
-            - PreserveHostHeader=
-            - RedirectTo=
-            - RemoveRequestHeader=
-            - RemoveRequestParameter=
-            - RemoveResponseHeader=
-            - RequestHeaderSize=
-            - RequestHeaderToRequestUri=
-            - StripPrefix=
+#            - AddRequestHeader=
+#            - AddRequestParameter=
+#            - AddResponseHeader=
+#            - DedupeResponseHeader=
+#            - FallbackHeaders=
+#            - Hystrix=
+#            - MapRequestHeader=
+#            - PrefixPath=
+#            - PreserveHostHeader=
+#            - RedirectTo=
+#            - RemoveRequestHeader=
+#            - RemoveRequestParameter=
+#            - RemoveResponseHeader=
+#            - RequestHeaderSize=
+#            - RequestHeaderToRequestUri=
+#            - StripPrefix=
 
 #springcloud-gateway使用的ribbon进行负载均衡，在这里进行ribbon的负载规则的配置
 #通过yml方式配置指定被调用方的负载均衡策略

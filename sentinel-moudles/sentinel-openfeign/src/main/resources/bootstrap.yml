@@ -1,0 +1,85 @@
+#控制台启动脚本如下
+#nohup java -Dserver.port=7888 -Dcsp.sentinel.dashboard.server=localhost:7888 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar >/dev/null 2>&1 &
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-openfeign
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+    sentinel:
+      transport:
+        #sentinel的服务端和当前应用的通信端口
+        port: 8719
+        #sentinel控制台的地址
+        dashboard: 192.168.241.13:7888
+      #sentinel客户端的饥饿加载，会注册自己，但是不会上报资源信息
+      eager: true
+      log:
+        #本地日志中携带pid，用于单机模拟多机器的场景
+        switch-pid: true
+      #是否收敛，如果为是，那么链路流控会失效
+      web-context-unify: false
+
+#ribbon相关配置【openFeign内使用了ribbon】
+ribbon-provider-custom-rule:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+
+ribbon:
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    clients: ribbon-provider-custom-rule
+    enabled: true
+
+#openFeign相关配置
+feign:
+  okhttp:
+    enabled: false
+  compression:
+    response:
+      enabled: true
+    request:
+      enabled: true
+  #httpclient相关配置
+  httpclient:
+    #开启httpclient
+    enabled: true
+    connection-timeout: 2000
+    #最大连接数的默认值。
+    max-connections: 500
+    #每条路由的最大连接数的默认值
+    max-connections-per-route: 50
+    #生存时间的默认值 900s
+    time-to-live: 900
+  client:
+    config:
+      #针对ribbon-provider-custom-rule这个服务进行配置
+      ribbon-provider-custom-rule:
+        #此处配置枚举的名字即可(还是要配置为FULL的，否则看不到请求体和响应体)
+        loggerLevel: FULL
+        connectTimeout: 2000
+        readTimeout: 3000
+        #配置全限定类名
+        requestInterceptors:
+        #          - com.zk.feign.ymlconfig.main.config.feign.FeignRequestLogInterceptor01
+        #          - com.zk.feign.ymlconfig.main.config.feign.FeignRequestLogInterceptor02
+  sentinel:
+    #【sentinel整合openFeign开启】
+    enabled: true
+  hystrix:
+    enabled: false
+logging:
+  level:
+    #配置某个包的日志级别(在这里是搭配feign的日志配置使用)
+    com.zk.sentinel.openfeign.main.service: debug
+    com.zk.sentinel.openfeign.main.controller: debug
+#sentinel相关配置

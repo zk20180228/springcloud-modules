@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.zk</groupId>
+        <artifactId>springcloud-modules</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>sentinel-moudles</artifactId>
+    <name>sentinel-moudles</name>
+    <description>Demo project for sentinel-moudles</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>sentinel-core-api</module>
+        <module>sentinel-aspect</module>
+        <module>sentinel-dashboard-hello</module>
+        <module>sentinel-flow-rule</module>
+        <module>sentinel-degrade-rule</module>
+        <module>sentinel-openfeign</module>
+        <module>sentinel-parameter-rule</module>
+        <module>sentinel-other-rule</module>
+        <module>sentinel-cluster-flow-modules</module>
+        <module>sentinel-nacos-datasource</module>
+        <module>sentinel-nacos-datasource-yml</module>
+    </modules>
+
+
+
+</project>

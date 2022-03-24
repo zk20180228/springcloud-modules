@@ -1,0 +1,60 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: skywalking-api-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+        ephemeral: true
+    sentinel:
+      eager: true
+      log:
+        switch-pid: true
+      transport:
+        port: 8712
+        dashboard: 192.168.241.13:7888
+      web-context-unify: false
+      filter:
+        enabled: false
+    gateway:
+      enabled: true
+      filter:
+        hystrix:
+          enabled: false
+      routes:
+        - id: skywalking-api-user
+          uri: lb://skywalking-api-consumer
+          order: 1
+          predicates:
+            - Path=/api-user/**
+          filters:
+            - StripPrefix=1
+      discovery:
+        locator:
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: false
+            maxAge: 3600
+gateway:
+  nacos:
+    sentinel:
+      rule:
+        serverAddr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        dataId: skywalking-api-consumer-flow-rule-datasource.json
+        groupId: DEFAULT_GROUP

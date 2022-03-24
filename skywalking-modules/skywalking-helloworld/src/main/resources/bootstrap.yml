@@ -1,0 +1,38 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: skywalking-helloworld
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: naocs
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+      config:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        file-extension: yml
+        refresh-enabled: true
+  datasource:
+    url: jdbc:mysql://192.168.241.13:3306/databases?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+#        group:
+
+mybatis:
+  config-location: classpath:mappers/*Mapper.xml
+#  CREATE TABLE `user_info` (
+#  `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '用户id',
+#  `username` VARCHAR(20) NOT NULL DEFAULT '' COMMENT '用户名' COLLATE 'utf8mb4_general_ci',
+#  `password` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '密码' COLLATE 'utf8mb4_general_ci',
+#  `create_time` DATETIME NOT NULL COMMENT '创建时间',
+#  PRIMARY KEY (`id`) USING BTREE
+#  );

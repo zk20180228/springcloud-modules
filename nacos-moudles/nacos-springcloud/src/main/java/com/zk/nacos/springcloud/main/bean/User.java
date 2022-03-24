@@ -20,4 +20,8 @@ public class User {
     private String computer;
     private String qq;
     private boolean isMarried;
+
+
+
+
 }

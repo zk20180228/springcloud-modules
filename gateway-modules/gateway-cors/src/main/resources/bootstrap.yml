@@ -1,0 +1,32 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: gateway-cors
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        namespace: public
+        username: nacos
+        password: nacos
+        metadata:
+          AA: aa
+          BB: bb
+    gateway:
+      routes:
+        - id: gateway-cors-test
+          uri: lb://ribbon-provider-custom-rule
+          predicates:
+            - Path=/gateway-cors/**
+          filters:
+            - StripPrefix=1
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            allowCredentials: false
+            maxAge: 3600
+

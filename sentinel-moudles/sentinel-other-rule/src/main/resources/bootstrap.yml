@@ -1,0 +1,23 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-other-rule
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+    sentinel:
+      transport:
+        dashboard: 192.168.241.13:7888
+        port: 8719
+      log:
+        switch-pid: true
+      web-context-unify: false
+      eager: true

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+spring cloud gateway是没有打印access log的，但是底层的Reactor Netty是有的，
+在应用启动命名中增加设置-Dreactor.netty.http.server.accessLogEnabled=true来开启。
+注：因为Reactor Netty不是基于spring boot的，所以它并不会去spring boot的配置中获取上面的配置，
+所以只能在Java System Property中获取。
+可以在常用的日志系统中配置日志的打印文件和格式，如logback的配置
+-->
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{60} %X{sourceThread} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="accessLog" class="ch.qos.logback.core.FileAppender">
+        <file>access_log.log</file>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="accessLog" />
+    </appender>
+
+    <!--其它指定模块的日志-->
+    <logger name="reactor.netty.http.server.AccessLog" level="INFO" additivity="false">
+        <appender-ref ref="async" />
+    </logger>
+
+    <!--根级别的日志-->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

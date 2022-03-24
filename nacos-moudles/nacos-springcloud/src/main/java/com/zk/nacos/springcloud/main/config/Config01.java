@@ -22,7 +22,7 @@ public class Config01 {
     /**
      * 从默认的配置项中读取数据(实验证明，能够自动刷新)
      */
-    @Value(value = "${userDesc:''}")
+    @Value(value = "${userDesc:}")
     private String userDesc;
 
 }

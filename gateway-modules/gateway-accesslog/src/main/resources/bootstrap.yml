@@ -1,0 +1,50 @@
+#  spring cloud gateway是没有打印access log的，但是底层的Reactor Netty是有的，
+#    在应用启动命名中增加设置-Dreactor.netty.http.server.accessLogEnabled=true来开启。
+#    注：因为Reactor Netty不是基于spring boot的，所以它并不会去spring boot的配置中获取上面的配置，
+#    所以只能在Java System Property中获取。
+#    可以在常用的日志系统中配置日志的打印文件和格式，如logback的配置
+# 日志格式如下：
+#127.0.0.1 - - [21/Dec/2021:12:00:33 +0800] "GET /gateway-netty-accesslog/provider/customRuleTest/31113?token=12332123 HTTP/1.1" 200 106 7999 256 ms
+server:
+  port: 7999
+
+spring:
+  application:
+    name: gateway-netty-accesslog
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        namespace: public
+        username: nacos
+        password: nacos
+        metadata:
+          AA: aa
+          BB: bb
+    gateway:
+      routes:
+        - id: gateway-netty-accesslog-test
+          uri: lb://ribbon-provider-custom-rule
+          predicates:
+            - Path=/gateway-netty-accesslog/**
+          filters:
+            - StripPrefix=1
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            allowCredentials: false
+            maxAge: 3600
+
+#ribbon相关配置
+ribbon-provider-custom-rule:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+
+ribbon:
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
+  eager-load:
+    enabled: true
+    clients: ribbon-provider-custom-rule

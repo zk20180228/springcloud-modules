@@ -1,0 +1,16 @@
+server:
+  port: 7999
+spring:
+  application:
+    name: sentinel-core-api
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.241.13:8848
+        username: nacos
+        password: nacos
+        namespace: public
+        metadata:
+          AA: aa
+          BB: bb
+

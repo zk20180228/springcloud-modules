@@ -14,6 +14,8 @@
         <module>loadbalancer-modules</module>
         <module>feign-moudles</module>
         <module>gateway-modules</module>
+        <module>sentinel-moudles</module>
+        <module>skywalking-modules</module>
     </modules>
 
     <packaging>pom</packaging>

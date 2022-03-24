@@ -19,8 +19,33 @@ spring:
           uri: lb://ribbon-provider-custom-rule
           predicates:
             - Path=/route-predicate/**
+            #自定义断言工厂
+            - CheckAuth=zk
+#            #接收一个日期参数，判断请求日期是否晚于指定日期
+#            - After=2019‐12‐31T23:59:59.789+08:00[Asia/Shanghai]
+#            #接收一个IP地址段，判断请求主机地址是否在地址段中
+#            - RemoteAddr=192.168.1.1/24
+#            #接收两个参数，cookie 名字和一个正则表达式。 判断请求
+#            #cookie是否具有给定名称且值与正则表达式匹配。
+#            - Cookie=chocolate, ch.
+#            #接收两个参数，标题名称和正则表达式。  判断请求Header是否具有给定名称且值与正则表达式匹配。
+#            - Header=X‐Request‐Id, \d+
+#            #接收一个参数，主机名模式。判断请求的Host是否满足匹配规则。
+#            - Host=**.testhost.org
+#            #接收一个参数，判断请求类型是否跟指定的类型匹配。
+#            - Method=GE
+#            #接收一个参数，判断请求的URI部分是否满足路径规则。
+#            - Path=/foo/{segment}
+#            #接收两个参数，请求param和正则表达式， 判断请求参数是否具有给定名称且值与正则表达式匹配。
+#            ‐ Query=baz, ba
+#            #接收一个[组名,权重], 然后对于同一个组内的路由按照权重转发
+#            - Weight=group3, 1
           filters:
             - StripPrefix=1
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 #springcloud-gateway使用的ribbon进行负载均衡，在这里进行ribbon的负载规则的配置
 #通过yml方式配置指定被调用方的负载均衡策略
